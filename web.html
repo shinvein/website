@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maroof Hasan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #F2F0E9;
+      --ink:      #141212;
+      --forest:   #3F593D;
+      --marigold: #F89C35;
+      --rose:     #ED93AF;
+      --stone:    #C7B8AB;
+      --cobalt:   #3051A8;
+      --white:    #FFFFFF;
+      --f:        'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      --fm:       'DM Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--f);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── REVEAL ── */
+    .rv {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 1s cubic-bezier(.16,1,.3,1),
+                  transform 1s cubic-bezier(.16,1,.3,1);
+    }
+    .rv.on { opacity: 1; transform: none; }
+    .d1 { transition-delay: .12s; }
+    .d2 { transition-delay: .26s; }
+    .d3 { transition-delay: .42s; }
+    .d4 { transition-delay: .58s; }
+    @media (prefers-reduced-motion: reduce) {
+      .rv, .rv.on { opacity:1; transform:none; transition:none; }
+    }
+
+    /* ── SHARED ── */
+    .section { padding: 8rem 5vw; }
+    .mono {
+      font-family: var(--fm);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-size: .72rem;
+      font-weight: 400;
+    }
+    .display {
+      font-size: clamp(3rem, 12vw, 10rem);
+      font-weight: 700;
+      line-height: .9;
+      letter-spacing: -.04em;
+    }
+
+    /* ─────────────────────────────
+       NAV
+    ───────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.1rem 5vw;
+      transition: background .4s ease;
+    }
+    #nav.scrolled {
+      background: rgba(242,240,233,.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,0,0,.07);
+    }
+    .nav-name {
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      color: var(--ink);
+    }
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--fm);
+      font-size: .7rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: .5;
+      transition: opacity .2s;
+    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-clock {
+      font-family: var(--fm);
+      font-size: .68rem;
+      letter-spacing: .06em;
+      color: var(--ink);
+      opacity: .4;
+    }
+    @media (max-width:640px) { .nav-links { display: none; } }
+
+    /* ─────────────────────────────
+       HERO
+    ───────────────────────────── */
+    .hero {
+      height: 100vh;
+      min-height: 640px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      padding: 0 5vw;
+      overflow: hidden;
+    }
+
+    /* Shapes */
+    .hs {
+      position: absolute;
+      z-index: 0;
+      border-radius: 6px;
+      opacity: 0;
+    }
+    .hs1 {
+      background: var(--marigold);
+      width: 40vw; height: 50vh;
+      top: 10%; right: 5%;
+      transform: rotate(5deg) scale(.92);
+      transition: transform 1.8s cubic-bezier(.16,1,.3,1),
+                  opacity 1.4s ease;
+    }
+    .hs1.on { opacity: 1; transform: rotate(5deg) scale(1); }
+
+    .hs2 {
+      background: var(--rose);
+      width: 20vw; height: 28vh;
+      top: 56%; right: 27%;
+      transform: rotate(-8deg) scale(.88);
+      transition: transform 2s cubic-bezier(.16,1,.3,1) .18s,
+                  opacity 1.6s ease .18s;
+    }
+    .hs2.on { opacity: .52; transform: rotate(-8deg) scale(1); }
+
+    .hs3 {
+      background: var(--forest);
+      width: 12vw; height: 14vh;
+      bottom: 12%; right: 10%;
+      transform: rotate(14deg) scale(.85);
+      transition: transform 2.2s cubic-bezier(.16,1,.3,1) .36s,
+                  opacity 1.8s ease .36s;
+    }
+    .hs3.on { opacity: .28; transform: rotate(14deg) scale(1); }
+
+    .hero-content { position: relative; z-index: 1; }
+
+    /* Animated name — letters stagger in */
+    .hero-name {
+      font-size: clamp(3.5rem, 13vw, 10rem);
+      font-weight: 700;
+      line-height: .9;
+      letter-spacing: -.04em;
+      color: var(--ink);
+    }
+    .hero-name .word { display: block; overflow: hidden; }
+    .hero-name .word span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity .7s cubic-bezier(.16,1,.3,1),
+                  transform .7s cubic-bezier(.16,1,.3,1);
+    }
+    .hero-name .word span.on {
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem;
+      font-weight: 300;
+      line-height: 1.55;
+      margin-top: 1.8rem;
+      max-width: 360px;
+      color: var(--forest);
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .9s ease .9s, transform .9s ease .9s;
+    }
+    .hero-sub.on { opacity: 1; transform: none; }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 2.5rem; left: 5vw;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-family: var(--fm);
+      font-size: .62rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--ink);
+      opacity: 0;
+      transition: opacity .7s ease 1.5s;
+    }
+    .scroll-cue.on { opacity: .4; }
+    .s-line {
+      width: 40px; height: 1px;
+      background: var(--ink);
+      transform-origin: left;
+      animation: breathe 2.6s ease-in-out 2s infinite;
+    }
+    @keyframes breathe {
+      0%,100% { transform: scaleX(1); opacity: .4; }
+      50%      { transform: scaleX(1.6); opacity: 1; }
+    }
+
+    /* ─────────────────────────────
+       ABOUT — white rounded card
+    ───────────────────────────── */
+    .about {
+      background: var(--white);
+      border-radius: 40px 40px 0 0;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      margin-top: 4rem;
+    }
+    .about-intro {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: rgba(20,18,18,.75);
+    }
+    .journal-date {
+      font-family: var(--fm);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--cobalt);
+      display: block;
+      margin-bottom: 1.2rem;
+    }
+    .about-h {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+
+    /* Qual cards */
+    .qual-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .qual-card {
+      border-radius: 16px;
+      padding: 1.4rem 1.6rem;
+      border: 1px solid rgba(0,0,0,.07);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      transition: transform .4s cubic-bezier(.16,1,.3,1),
+                  box-shadow .4s ease;
+    }
+    .qual-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.07);
+    }
+    .qual-card.sage { background: #D3E5E9; }
+    .qual-card.lav  { background: #BBB2CE; }
+    .qual-title { font-size: .95rem; font-weight: 600; margin-bottom: .3rem; }
+    .qual-subs {
+      font-family: var(--fm);
+      font-size: .62rem;
+      letter-spacing: .05em;
+      line-height: 1.7;
+      opacity: .65;
+    }
+    .qual-badge {
+      font-family: var(--fm);
+      font-size: .58rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,.6);
+      border: 1px solid rgba(0,0,0,.1);
+      border-radius: 50px;
+      padding: .3rem .8rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* ─────────────────────────────
+       INTERESTS — forest
+    ───────────────────────────── */
+    .interests {
+      background: var(--forest);
+      color: var(--white);
+    }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 3rem; }
+    .tag {
+      padding: .85rem 1.8rem;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 50px;
+      font-size: .95rem;
+      font-weight: 400;
+      cursor: default;
+      transition: background .25s ease, border-color .25s ease,
+                  transform .3s cubic-bezier(.16,1,.3,1);
+    }
+    .tag:hover {
+      background: rgba(255,255,255,.14);
+      border-color: rgba(255,255,255,.55);
+      transform: translateY(-2px);
+    }
+
+    /* ─────────────────────────────
+       SKILLS
+    ───────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .skill-card {
+      border-radius: 20px;
+      padding: 2.4rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4rem;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+      /* hover lift */
+      transition: transform .45s cubic-bezier(.16,1,.3,1),
+                  box-shadow .45s ease;
+    }
+    .skill-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(0,0,0,.15);
+    }
+    /* animated inner shine sweep on hover */
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: -60%; left: -80%;
+      width: 60%; height: 200%;
+      background: rgba(255,255,255,.12);
+      transform: skewX(-20deg) translateX(-100%);
+      transition: transform .6s ease;
+      pointer-events: none;
+    }
+    .skill-card:hover::before { transform: skewX(-20deg) translateX(380%); }
+
+    .sk-num {
+      font-family: var(--fm);
+      font-size: .62rem;
+      letter-spacing: .12em;
+      opacity: .6;
+    }
+    .sk-name {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -.03em;
+      line-height: 1;
+    }
+    .sk-body {
+      font-size: .9rem;
+      font-weight: 300;
+      line-height: 1.6;
+      opacity: .85;
+    }
+    /* colour per card — new palette */
+    .sk-forest  { background: var(--forest);   color: var(--white); }
+    .sk-marigold{ background: var(--marigold);  color: var(--ink); }
+    .sk-cobalt  { background: var(--cobalt);    color: var(--white); }
+
+    /* faded watermark text behind each card's content */
+    .sk-wm {
+      position: absolute;
+      bottom: -.15em;
+      right: -.05em;
+      font-size: clamp(5rem, 14vw, 9rem);
+      font-weight: 700;
+      letter-spacing: -.05em;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      opacity: .1;
+      white-space: nowrap;
+    }
+
+    /* ─────────────────────────────
+       TIMELINE
+    ───────────────────────────── */
+    .timeline-wrap { margin-top: 3.5rem; }
+    .tl {
+      border-left: 2px solid var(--stone);
+      margin-left: 8px;
+      padding-left: 2.5rem;
+    }
+    .tl-item {
+      margin-bottom: 2.6rem;
+      position: relative;
+    }
+    .tl-item:last-child { margin-bottom: 0; }
+    /* Dot */
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: -2.97rem;
+      top: .4rem;
+      width: 13px; height: 13px;
+      background: var(--rose);
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      transition: transform .3s cubic-bezier(.16,1,.3,1),
+                  background .3s ease;
+    }
+    .tl-item:hover::before {
+      transform: scale(1.4);
+      background: var(--cobalt);
+    }
+    .tl-label {
+      font-family: var(--fm);
+      font-size: .62rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--cobalt);
+      display: block;
+      margin-bottom: .35rem;
+    }
+    .tl-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      margin-bottom: .35rem;
+    }
+    .tl-body {
+      font-size: .88rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(20,18,18,.6);
+    }
+    .achieve-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+    .achieve-tag {
+      font-family: var(--fm);
+      font-size: .58rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      border: 1px solid rgba(20,18,18,.18);
+      border-radius: 50px;
+      padding: .25rem .75rem;
+      color: var(--ink);
+    }
+
+    /* ─────────────────────────────
+       CONTACT
+    ───────────────────────────── */
+    .contact { background: var(--stone); }
+    .contact .display { color: var(--white); margin-bottom: 2.5rem; }
+    .contact-body {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(255,255,255,.8);
+      max-width: 440px;
+      margin-bottom: 3rem;
+    }
+    .contact-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      font-family: var(--f);
+      font-size: .9rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
+      border-radius: 50px;
+      padding: .85rem 1.8rem;
+      border: none;
+      cursor: pointer;
+      transition: transform .3s cubic-bezier(.16,1,.3,1),
+                  opacity .25s ease,
+                  box-shadow .3s ease;
+      text-decoration: none;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.15);
+    }
+    .btn:active { transform: translateY(-1px); }
+    .btn-email {
+      background: var(--ink);
+      color: var(--white);
+    }
+    .btn-linkedin {
+      background: var(--white);
+      color: var(--cobalt);
+    }
+    /* icon svg inside button */
+    .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ─────────────────────────────
+       FOOTER
+    ───────────────────────────── */
+    footer {
+      padding: 2.5rem 5vw;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-top: 1px solid rgba(20,18,18,.1);
+    }
+    footer p { font-size: .8rem; font-weight: 300; opacity: .5; }
+    .footer-ist {
+      font-family: var(--fm);
+      font-size: .62rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      opacity: .35;
+    }
+
+    /* ─────────────────────────────
+       RESPONSIVE
+    ───────────────────────────── */
+    @media (max-width: 900px) {
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .hs2, .hs3  { display: none; }
+      .hs1 { width: 60vw; height: 36vh; }
+      .section { padding: 5.5rem 6vw; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <span class="nav-name">Maroof Hasan</span>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#timeline">Timeline</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <span class="nav-clock" id="clk">--:--:-- IST</span>
+  </nav>
+
+
+  <!-- ═══════════ HERO ═══════════ -->
+  <section class="hero" id="top">
+    <div class="hs hs1" id="hs1"></div>
+    <div class="hs hs2" id="hs2"></div>
+    <div class="hs hs3" id="hs3"></div>
+
+    <div class="hero-content">
+      <h1 class="hero-name" id="heroName">
+        <span class="word" id="w1"></span>
+        <span class="word" id="w2"></span>
+      </h1>
+      <p class="hero-sub" id="hsub">
+        Coding, design, writing &amp; sport — a sketchbook of things I make and enjoy.
+      </p>
+    </div>
+
+    <div class="scroll-cue" id="scue">
+      <div class="s-line"></div>
+      Scroll
+    </div>
+  </section>
+
+
+  <!-- ═══════════ ABOUT ═══════════ -->
+  <section class="section about" id="about">
+    <h2 class="mono rv">// About</h2>
+
+    <div class="about-grid">
+      <div>
+        <span class="journal-date rv d1">Delhi · 2026</span>
+        <div class="about-h rv d2">Learning &amp;<br>Building</div>
+        <p class="about-intro rv d3">
+          I'm Maroof, 12th pass. I code, make visual art, and write stories and poems — three things I genuinely enjoy getting better at.
+        </p>
+      </div>
+
+      <div class="qual-cards">
+        <div class="qual-card sage rv d2">
+          <div>
+            <div class="qual-title">Higher Secondary (12th)</div>
+            <div class="qual-subs">Physics · Chemistry · Biology · English · Computer Science</div>
+          </div>
+          <span class="qual-badge">Completed</span>
+        </div>
+        <div class="qual-card lav rv d3">
+          <div>
+            <div class="qual-title">Secondary (10th)</div>
+            <div class="qual-subs">Maths · Science · Social Studies · English · Hindi · IT</div>
+          </div>
+          <span class="qual-badge">Completed</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════ INTERESTS ═══════════ -->
+  <section class="section interests">
+    <h2 class="display rv">Interests</h2>
+    <div class="tag-cloud">
+      <div class="tag rv d1">Football</div>
+      <div class="tag rv d1">Badminton</div>
+      <div class="tag rv d2">Coding</div>
+      <div class="tag rv d2">Art</div>
+      <div class="tag rv d3">Stories</div>
+      <div class="tag rv d3">Poetry</div>
+      <div class="tag rv d4">Gaming</div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════ SKILLS ═══════════ -->
+  <section class="section" id="skills">
+    <h2 class="mono rv">// Skills</h2>
+    <div class="skills-grid">
+
+      <div class="skill-card sk-forest rv d1">
+        <span class="sk-num">01</span>
+        <div class="sk-name">Coding</div>
+        <p class="sk-body">Building tools and projects from scratch — learning by writing, breaking, and fixing things.</p>
+        <span class="sk-wm">CODE</span>
+      </div>
+
+      <div class="skill-card sk-marigold rv d2">
+        <span class="sk-num">02</span>
+        <div class="sk-name">Design</div>
+        <p class="sk-body">Illustrations, posters, and visual art — turning ideas into finished pieces through colour and layout.</p>
+        <span class="sk-wm">ART</span>
+      </div>
+
+      <div class="skill-card sk-cobalt rv d3">
+        <span class="sk-num">03</span>
+        <div class="sk-name">Writing</div>
+        <p class="sk-body">Stories and poems — putting ideas into words and finding new ways to tell something true.</p>
+        <span class="sk-wm">WRITE</span>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════ TIMELINE ═══════════ -->
+  <section class="section" id="timeline">
+    <h2 class="mono rv">// Timeline</h2>
+    <div class="timeline-wrap">
+      <div class="tl">
+
+        <div class="tl-item rv d1">
+          <span class="tl-label">Earlier</span>
+          <div class="tl-title">Secondary — 10th</div>
+          <p class="tl-body">Maths · Science · Social Studies · English · Hindi · IT</p>
+        </div>
+
+        <div class="tl-item rv d2">
+          <span class="tl-label">Sport</span>
+          <div class="tl-title">Football — Inter-School</div>
+          <p class="tl-body">Competed at the inter-school level — teamwork, reading the game, and giving it everything.</p>
+          <div class="achieve-tags">
+            <span class="achieve-tag">3 Medals</span>
+            <span class="achieve-tag">6 Certificates</span>
+          </div>
+        </div>
+
+        <div class="tl-item rv d3">
+          <span class="tl-label">Sport</span>
+          <div class="tl-title">Badminton — Inter-School</div>
+          <p class="tl-body">Played at the inter-school level — a one-on-one game that sharpens focus and reflexes.</p>
+          <div class="achieve-tags">
+            <span class="achieve-tag">Inter-School</span>
+          </div>
+        </div>
+
+        <div class="tl-item rv d4">
+          <span class="tl-label">2026</span>
+          <div class="tl-title">Higher Secondary — 12th</div>
+          <p class="tl-body">Physics · Chemistry · Biology · English · Computer Science</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════ CONTACT ═══════════ -->
+  <section class="section contact" id="contact">
+    <h2 class="display rv">Contact</h2>
+    <p class="contact-body rv d1">
+      Want to connect or just say hello? Find me anywhere below.
+    </p>
+    <div class="contact-btns rv d2">
+
+      <!-- Email -->
+      <a class="btn btn-email" href="mailto:maroof@example.com">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="3" width="14" height="10" rx="1.5" stroke="white" stroke-width="1.4"/>
+          <polyline points="1,4 8,9.5 15,4" stroke="white" stroke-width="1.4" stroke-linejoin="round"/>
+        </svg>
+        Email
+      </a>
+
+      <!-- LinkedIn -->
+      <a class="btn btn-linkedin" href="https://linkedin.com/in/maroofhasan" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="14" height="14" rx="2.5" stroke="#3051A8" stroke-width="1.4"/>
+          <line x1="4.5" y1="6.5" x2="4.5" y2="11.5" stroke="#3051A8" stroke-width="1.4" stroke-linecap="round"/>
+          <circle cx="4.5" cy="4.5" r=".8" fill="#3051A8"/>
+          <path d="M7.5 11.5V8.5C7.5 7.4 8.1 6.5 9.5 6.5C10.9 6.5 11.5 7.5 11.5 8.5V11.5" stroke="#3051A8" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        LinkedIn
+      </a>
+
+      <!-- Instagram -->
+      <a class="btn btn-insta" href="https://instagram.com/maroofhasan" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1.5" y="1.5" width="13" height="13" rx="3.5" stroke="white" stroke-width="1.4"/>
+          <circle cx="8" cy="8" r="3" stroke="white" stroke-width="1.4"/>
+          <circle cx="11.5" cy="4.5" r=".9" fill="white"/>
+        </svg>
+        Instagram
+      </a>
+
+      <!-- Twitter / X -->
+      <a class="btn btn-x" href="https://twitter.com/maroofhasan" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 2.5 L7.2 8.8 L2 13.5 H3.8 L8 10 L11.6 13.5 H14.5 L9.1 6.9 L14 2.5 H12.2 L8.3 5.8 L5 2.5 Z" fill="white"/>
+        </svg>
+        Twitter
+      </a>
+
+      <!-- WhatsApp -->
+      <a class="btn btn-wa" href="https://wa.me/91XXXXXXXXXX" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="8" cy="8" r="6.5" stroke="white" stroke-width="1.4"/>
+          <path d="M5.5 6C5.5 6 5.8 8.5 8 10.5C10.2 12.5 10.5 10.5 10.5 10.5L9.2 9.2C9.2 9.2 8.8 9.5 8.3 9C7.5 8.2 7 7 7 7L5.5 6Z" stroke="white" stroke-width="1.2" stroke-linejoin="round"/>
+        </svg>
+        WhatsApp
+      </a>
+
+    </div>
+  </section>
+
+
+  <!-- ═══════════ FOOTER ═══════════ -->
+  <footer>
+    <p>© 2026 Maroof Hasan</p>
+    <span class="footer-ist" id="fist">--:--:-- IST</span>
+  </footer>
+
+
+  <script>
+    /* ── IST CLOCK ── */
+    (function(){
+      function p(n){ return String(n).padStart(2,'0'); }
+      function tick(){
+        var n = new Date();
+        var i = new Date(n.getTime() + 5.5*3600000 + n.getTimezoneOffset()*60000);
+        var s = p(i.getHours())+':'+p(i.getMinutes())+':'+p(i.getSeconds())+' IST';
+        document.getElementById('clk').textContent = s;
+        document.getElementById('fist').textContent = s;
+      }
+      tick(); setInterval(tick, 1000);
+    })();
+
+    /* ── NAV ON SCROLL ── */
+    (function(){
+      var nav = document.getElementById('nav');
+      window.addEventListener('scroll', function(){
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    })();
+
+    /* ── HERO NAME WORD-BY-WORD SLIDE UP ── */
+    (function(){
+      var words = [['m','a','r','o','o','f'], ['h','a','s','a','n']];
+      var ids   = ['w1','w2'];
+      words.forEach(function(letters, wi){
+        var el = document.getElementById(ids[wi]);
+        letters.forEach(function(ch){
+          var s = document.createElement('span');
+          s.textContent = ch;
+          el.appendChild(s);
+        });
+      });
+
+      /* Trigger: stagger letter reveals per word, word 2 slightly after word 1 */
+      function revealWord(id, wordDelay){
+        var el = document.getElementById(id);
+        var spans = el.querySelectorAll('span');
+        spans.forEach(function(sp, i){
+          setTimeout(function(){
+            sp.classList.add('on');
+          }, wordDelay + i * 55);
+        });
+      }
+
+      setTimeout(function(){ revealWord('w1', 0); },  300);
+      setTimeout(function(){ revealWord('w2', 0); },  640);
+      setTimeout(function(){
+        document.getElementById('hsub').classList.add('on');
+      }, 980);
+      setTimeout(function(){
+        document.getElementById('scue').classList.add('on');
+      }, 1300);
+    })();
+
+    /* ── HERO SHAPES FLOAT IN ── */
+    (function(){
+      function show(id, delay){
+        setTimeout(function(){
+          var el = document.getElementById(id);
+          if(el) el.classList.add('on');
+        }, delay);
+      }
+      show('hs1', 60);
+      show('hs2', 220);
+      show('hs3', 380);
+    })();
+
+    /* ── SCROLL REVEAL ── */
+    (function(){
+      var els = document.querySelectorAll('.rv');
+      if(!('IntersectionObserver' in window)){
+        els.forEach(function(e){ e.classList.add('on'); }); return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.1, rootMargin: '0px 0px -36px 0px' });
+      els.forEach(function(e){ io.observe(e); });
+    })();
+  </script>
+</body>
+</html>
